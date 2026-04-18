@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reagent Tracker App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+</head>
+
+<body class="py-4">
+    <div id="authModal">
+
+        <h3 id="authTitle">Login</h3>
+
+        <!-- AUTH FORM -->
+        <div id="authForm">
+            <input id="authEmail" placeholder="Email" />
+            <input id="authPassword" type="password" placeholder="Password" />
+
+            <button id="authSubmitBtn">Login</button>
+
+            <p id="authToggleText">
+                Need an account? <a href="#" id="authToggleLink">Sign up</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- LOGGED IN VIEW -->
+    <div id="authLoggedIn" style="display:none;">
+        <p id="welcomeText"></p>
+        <button id="logoutBtnModal">Logout</button>
+    </div>
+    </div>
+    <div class="app mx-auto">
+        <div class="h1"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill=#4caf50 class="bi bi-flask"
+                viewBox="0 0 16 16">
+                <path
+                    d="M4.5 0a.5.5 0 0 0 0 1H5v5.36L.503 13.717A1.5 1.5 0 0 0 1.783 16h12.434a1.5 1.5 0 0 0 1.28-2.282L11 6.359V1h.5a.5.5 0 0 0 0-1zM10 2H9a.5.5 0 0 0 0 1h1v1H9a.5.5 0 0 0 0 1h1v1H9a.5.5 0 0 0 0 1h1.22l.61 1H10a.5.5 0 1 0 0 1h1.442l.611 1H11a.5.5 0 1 0 0 1h1.664l.611 1H12a.5.5 0 1 0 0 1h1.886l.758 1.24a.5.5 0 0 1-.427.76H1.783a.5.5 0 0 1-.427-.76l4.57-7.48A.5.5 0 0 0 6 6.5V1h4z" />
+            </svg> Reagents Tracker</div>
+        <div class="d-flex justify-content-end mb-3">
+            <button id="openNewModal" data-bs-toggle="modal" data-bs-target="#modal-add" type="button"
+                class="btn btn-primary"><i class="bi bi-plus-circle"></i> Add New
+                Reagent</button>
+        </div>
+        <div id="auth-message" style="display:none; color:red; font-weight:bold;">
+            Please sign in to view reagents.
+        </div>
+        <div id="reagents"></div>
+        <div id="reagents"></div>
+    </div>
+
+    <!-- modal needs to be in body level -->
+    <!-- modal dialog for adding -->
+    <div id='modal-add' class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add a new Reagent</h5>
+                    <div id="" reagents></div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="new-reagent-form">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Name of Reagent</label>
+                            <input type="text" class="form-control" id="title">
+                        </div>
+                        <div class="mb-3">
+                            <label for="open_date" class="form-label">When was the Reagent Opened?</label>
+                            <input type="date" id="open_date" name="open_date"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="freezer" class="form-label">Which Freezer is the Reagent Stored In?</label>
+                            <input type="text" class="form-control" id="freezer">
+                        </div>
+                        <div class="mb-3">
+                            <label for="protocol" class="form-label">What Protocols is this Reagent Commonly Used
+                                In?</label>
+                            <input type="text" class="form-control" id="protocol">
+                        </div>
+                        <div class="mb-3">
+                            <label for="desc" class="form-label">Notes/Other Information</label>
+                            <textarea class="form-control" id="desc" rows="3"></textarea>
+                        </div>
+                        <div class='text-danger' id='msg'></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id='close-add-modal' type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i
+                            class="bi bi-x"></i> Close</button>
+                    <button id='add-btn' type="button" class="btn btn-primary"><i class="bi bi-plus-circle"></i>
+                        Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id='modal-edit' class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Reagent</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="edit-reagent-form">
+                        <div class="mb-3">
+                            <label for="titleEdit" class="form-label">Name of Reagent</label>
+                            <input type="text" class="form-control" id="titleEdit">
+                        </div>
+                        <div class="mb-3">
+                            <label for="open_dateEdit" class="form-label">When was the Reagent Opened?</label>
+                            <input type="date" id="open_dateEdit" name="open_dateEdit"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="freezerEdit" class="form-label">Which Freezer is the Reagent Stored In?</label>
+                            <input type="text" class="form-control" id="freezerEdit">
+                        </div>
+                        <div class="mb-3">
+                            <label for="protocolEdit" class="form-label">What Protocols is this Reagent Commonly Used
+                                In?</label>
+                            <input type="text" class="form-control" id="protocolEdit">
+                        </div>
+                        <div class="mb-3">
+                            <label for="descEdit" class="form-label">Notes/Other Information</label>
+                            <textarea class="form-control" id="descEdit" rows="3"></textarea>
+                        </div>
+                        <div class='text-danger' id='msgEdit'></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id='close-edit-modal' type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i
+                            class="bi bi-x"></i> Close</button>
+                    <button id='edit-btn' type="button" class="btn btn-warning"><i class="bi bi-check-circle"></i> Yes,
+                        Update it</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>
