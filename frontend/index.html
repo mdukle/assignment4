@@ -13,30 +13,39 @@
 </head>
 
 <body class="py-4">
-    <div id="authModal">
+    <div class="modal fade" id="authModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content p-3">
 
-        <h3 id="authTitle">Login</h3>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="authTitle">Login</h5>
+                </div>
 
-        <!-- AUTH FORM -->
-        <div id="authForm">
-            <input id="authEmail" placeholder="Email" />
-            <input id="authPassword" type="password" placeholder="Password" />
+                <div class="modal-body">
 
-            <button id="authSubmitBtn">Login</button>
+                    <input id="authEmail" class="form-control mb-2" placeholder="Email" />
+                    <input id="authPassword" type="password" class="form-control mb-3" placeholder="Password" />
 
-            <p id="authToggleText">
-                Need an account? <a href="#" id="authToggleLink">Sign up</a>
-            </p>
+                    <button id="authSubmitBtn" class="btn btn-primary w-100">
+                        Login
+                    </button>
+
+                    <p class="mt-3 text-center" id="authToggleText">
+                        Need an account? <a href="#" id="authToggleLink">Sign up</a>
+                    </p>
+
+                </div>
+
+            </div>
         </div>
-
-        <!-- LOGGED IN VIEW -->
-        <div id="authLoggedIn" style="display:none;">
-            <p id="welcomeText"></p>
-            <button id="logoutBtnModal">Logout</button>
-        </div>
-
     </div>
-    
+
+    <div class="modal-footer">
+        <button id="logoutBtnModal" class="btn btn-danger btn-lg ms-auto">
+            Logout
+        </button>
+    </div>
+
     <div class="app mx-auto">
         <div class="h1"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill=#4caf50 class="bi bi-flask"
                 viewBox="0 0 16 16">

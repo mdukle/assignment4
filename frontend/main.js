@@ -1,37 +1,35 @@
 let reagentIdInEdit = null;
 const api = "http://127.0.0.1:8000/reagents";
 let authMode = "login";
+let authModalInstance = null;
 
 // ---------- AUTH UI ----------
-function updateAuthUI() {
+function syncAuthUI() {
     const token = localStorage.getItem("token");
-
-    const form = document.getElementById("authForm");
-    const loggedIn = document.getElementById("authLoggedIn");
 
     const logoutBtn = document.getElementById("logoutBtnModal");
 
-    if (token) {
-        authMode = "loggedIn";
-
-        form.style.display = "none";
-        loggedIn.style.display = "block";
-
-        document.getElementById("welcomeText").innerText =
-            `Logged in as ${localStorage.getItem("username") || "user"}`;
-
-        document.getElementById("logoutBtnModal").style.display = "block";
-    } else {
-        authMode = "login";
-
-        form.style.display = "block";
-        loggedIn.style.display = "none";
-
-        logoutBtn.style.display = "none";
+    if (logoutBtn) {
+        logoutBtn.style.display = token ? "block" : "none";
     }
 }
-function toggleAuthMode() {
-    if (authMode === "loggedIn") return; // prevent toggle when logged in
+
+function requireAuth() {
+    const token = localStorage.getItem("token");
+
+    const modalEl = document.getElementById("authModal");
+    authModalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
+
+    if (!token) {
+        authModalInstance.show();
+    } else {
+        authModalInstance.hide();
+    }
+}
+
+// ---------- TOGGLE ----------
+function toggleAuthMode(e) {
+    e.preventDefault();
 
     authMode = authMode === "login" ? "signup" : "login";
 
@@ -49,6 +47,12 @@ function toggleAuthMode() {
     attachToggleListener();
 }
 
+function attachToggleListener() {
+    document
+        .getElementById("authToggleLink")
+        .addEventListener("click", toggleAuthMode);
+}
+
 // ---------- LOGIN ----------
 async function login(email, password) {
     const formData = new URLSearchParams();
@@ -60,33 +64,32 @@ async function login(email, password) {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: formData
     });
-
     if (!res.ok) {
-        const err = await res.json();
+        const text = await res.text();
 
-        if (err.detail === "User not found") {
-            alert("No account found. Please sign up.");
-            document.getElementById("signupBtn").style.display = "block";
+        let message = "Login failed";
+
+        try {
+            const json = JSON.parse(text);
+            message = json.detail || message;
+        } catch {
+            message = text;
         }
-        else if (err.detail === "Incorrect password") {
-            alert("Wrong password. Try again.");
-        }
-        else {
-            alert("Login failed");
-        }
+
+        alert(message);
         return;
     }
 
     const data = await res.json();
 
     localStorage.setItem("token", data.access_token);
-    localStorage.setItem("role", data.role);
-    localStorage.setItem("username", data.username);
+    localStorage.setItem("email", data.email);
 
-    updateAuthUI();
+    syncAuthUI();
+    requireAuth();
+    authModalInstance.hide();
+
     getAllReagents();
-
-    alert("Logged in successfully!");
 }
 
 // ---------- SIGNUP ----------
@@ -98,13 +101,57 @@ async function signup(email, password) {
     });
 
     if (!res.ok) {
-        alert("Signup failed");
+        if (res.status === 409) {
+            alert("User already exists. Try logging in.");
+        } else {
+            alert("Signup failed");
+        }
         return;
     }
 
-    alert("Account created! Please log in.");
+    alert("Account created!");
+    syncAuthUI();
+    authMode = "login";
+    toggleAuthMode(new Event("click"));
 }
 
+// ---------- LOGOUT ----------
+function logout() {
+    localStorage.clear();
+    document.getElementById("reagents").innerHTML = "";
+
+    const email = document.getElementById("authEmail");
+    const password = document.getElementById("authPassword");
+
+    if (email) email.value = "";
+    if (password) password.value = "";
+
+    syncAuthUI();
+    requireAuth();
+}
+
+// ---------- INIT ----------
+document.addEventListener("DOMContentLoaded", () => {
+
+    attachToggleListener();
+
+    if (localStorage.getItem("token")) {
+        getAllReagents();
+    }
+
+    document.getElementById("authSubmitBtn").addEventListener("click", () => {
+        const email = document.getElementById("authEmail").value;
+        const password = document.getElementById("authPassword").value;
+
+        if (authMode === "login") {
+            login(email, password);
+        } else {
+            signup(email, password);
+        }
+    });
+
+    document.getElementById("logoutBtnModal").addEventListener("click", logout);
+});
 // ---------- GET ALL ----------
 async function getAllReagents() {
     const token = localStorage.getItem("token");
@@ -240,37 +287,36 @@ function renderReagents(data) {
 
 (() => {
 
-    updateAuthUI();
     const token = localStorage.getItem("token");
 
-    if (!token) {
-        document.getElementById("auth-message").style.display = "block";
-        document.getElementById("reagents").innerHTML = "";
-        data = [];
-        return;
+    if (token) {
+        getAllReagents();
     }
-
-    document.getElementById("auth-message").style.display = "none";
 })();
 
 document.addEventListener("DOMContentLoaded", () => {
-    updateAuthUI();
+
+    syncAuthUI();
+    attachToggleListener();
+
+    requireAuth();
 
     if (localStorage.getItem("token")) {
         getAllReagents();
     }
 
+
     document.getElementById("authSubmitBtn").addEventListener("click", () => {
         login(
-            document.getElementById("loginEmail").value,
-            document.getElementById("loginPassword").value
+            document.getElementById("authEmail").value,
+            document.getElementById("authPassword").value
         );
     });
 
-    document.getElementById("authToggleText").addEventListener("click", () => {
+    document.getElementById("authToggleLink").addEventListener("click", () => {
         signup(
-            document.getElementById("loginEmail").value,
-            document.getElementById("loginPassword").value
+            document.getElementById("authEmail").value,
+            document.getElementById("authPassword").value
         );
     });
 
@@ -278,7 +324,6 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.clear();
         document.getElementById("reagents").innerHTML = "";
 
-        updateAuthUI();
     });
 
     document.getElementById("add-btn").addEventListener("click", (e) => {

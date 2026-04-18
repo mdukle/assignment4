@@ -17,14 +17,15 @@ async def sign_user_up(user: User) -> dict:
             status_code=status.HTTP_409_CONFLICT,
             detail="User with email provided exists already.",
         )
-    user = await User.find_one(User.email == email)
+    # user = await User.find_one(User.email == user.email)
+
+    user = User(
+        email=user.email,
+        password=hash_password(user.password)
+    )
 
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-
-    if not verify_password(password, user.password):
-        raise HTTPException(status_code=401, detail="Incorrect password")
-        user.password = hash_password(user.password)
 
     await user.insert()
     return {"message": "User created successfully"}
