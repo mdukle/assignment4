@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from models import Reagent
-from tracker import TrackerRequest
+from models import TrackerRequest
 from auth.authenticate import authenticate as get_current_user
 
 tracker_router = APIRouter()

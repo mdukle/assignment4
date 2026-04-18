@@ -1,6 +1,6 @@
 from beanie import Document
 from datetime import date
-from pydantic import EmailStr
+from pydantic import BaseModel, EmailStr
 
 
 class Reagent(Document):
@@ -22,3 +22,12 @@ class User(Document):
 
     class Settings:
         name = "users"
+
+
+class TrackerRequest(BaseModel):
+    title: str
+    desc: str
+    open_date: date
+    freezer: str
+    protocol: str
+
