@@ -305,14 +305,6 @@ document.addEventListener("DOMContentLoaded", () => {
         getAllReagents();
     }
 
-
-    document.getElementById("authSubmitBtn").addEventListener("click", () => {
-        login(
-            document.getElementById("authEmail").value,
-            document.getElementById("authPassword").value
-        );
-    });
-
     document.getElementById("authToggleLink").addEventListener("click", () => {
         signup(
             document.getElementById("authEmail").value,

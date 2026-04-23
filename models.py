@@ -30,4 +30,3 @@ class TrackerRequest(BaseModel):
     open_date: date
     freezer: str
     protocol: str
-
