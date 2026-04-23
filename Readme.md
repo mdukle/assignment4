@@ -82,7 +82,7 @@ If users are making an account for the first time, they can click "Sign Up." A s
 Different users can save different reagents to their dashboard. This is the view for User 1:
 ![User 1 View Output](screenshots/view1_pic.png)
 
-And this is the view for User 2:
+And this is the view for User 2. Notice how they have their own saved reagents, that are distinct from User 1:
 ![User 2 View Output](screenshots/view2_pic.png)
 
 
