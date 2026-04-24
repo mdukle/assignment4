@@ -85,6 +85,12 @@ Different users can save different reagents to their dashboard. This is the view
 And this is the view for User 2. Notice how they have their own saved reagents, that are distinct from User 1:
 ![User 2 View Output](screenshots/view2_pic.png)
 
+Further, users are stored in MongoDB as a collection in reagents_db:
+![DB Organization Output](screenshots/mongodb_pic.png)
+
+And, here is an example of how users are stored in MongoDB. Their hashed passwords are stored for increased security:
+![User Storage in MongoDB Output](screenshots/users_in_db_pic.png)
+
 
 
 
