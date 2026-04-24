@@ -22,8 +22,10 @@ function requireAuth() {
 
     if (!token) {
         authModalInstance.show();
-    } else {
-        authModalInstance.hide();
+
+        // optional: clear fields
+        document.getElementById("authEmail").value = "";
+        document.getElementById("authPassword").value = "";
     }
 }
 
@@ -131,9 +133,32 @@ function logout() {
 }
 
 // ---------- INIT ----------
+// document.addEventListener("DOMContentLoaded", () => {
+
+//     attachToggleListener();
+
+//     if (localStorage.getItem("token")) {
+//         getAllReagents();
+//     }
+
+//     document.getElementById("authSubmitBtn").addEventListener("click", () => {
+//         const email = document.getElementById("authEmail").value;
+//         const password = document.getElementById("authPassword").value;
+
+//         if (authMode === "login") {
+//             login(email, password);
+//         } else {
+//             signup(email, password);
+//         }
+//     });
+
+//     document.getElementById("logoutBtnModal").addEventListener("click", logout);
+// });
 document.addEventListener("DOMContentLoaded", () => {
 
+    syncAuthUI();
     attachToggleListener();
+    requireAuth();
 
     if (localStorage.getItem("token")) {
         getAllReagents();
@@ -143,6 +168,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const email = document.getElementById("authEmail").value;
         const password = document.getElementById("authPassword").value;
 
+        if (!email || !password) {
+            alert("Please enter email and password");
+            return;
+        }
+
         if (authMode === "login") {
             login(email, password);
         } else {
@@ -151,6 +181,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     document.getElementById("logoutBtnModal").addEventListener("click", logout);
+
+    document.getElementById("add-btn").addEventListener("click", (e) => {
+        e.preventDefault();
+        addReagent();
+    });
+
+    document.getElementById("edit-btn").addEventListener("click", (e) => {
+        e.preventDefault();
+        updateReagent();
+    });
 });
 // ---------- GET ALL ----------
 async function getAllReagents() {
@@ -294,38 +334,31 @@ function renderReagents(data) {
     }
 })();
 
-document.addEventListener("DOMContentLoaded", () => {
+// document.addEventListener("DOMContentLoaded", () => {
 
-    syncAuthUI();
-    attachToggleListener();
+//     syncAuthUI();
+//     attachToggleListener();
 
-    requireAuth();
+//     requireAuth();
 
-    if (localStorage.getItem("token")) {
-        getAllReagents();
-    }
+//     if (localStorage.getItem("token")) {
+//         getAllReagents();
+//     }
 
-    document.getElementById("authToggleLink").addEventListener("click", () => {
-        signup(
-            document.getElementById("authEmail").value,
-            document.getElementById("authPassword").value
-        );
-    });
+//     document.getElementById("logoutBtnModal").addEventListener("click", () => {
+//         localStorage.clear();
+//         document.getElementById("reagents").innerHTML = "";
 
-    document.getElementById("logoutBtnModal").addEventListener("click", () => {
-        localStorage.clear();
-        document.getElementById("reagents").innerHTML = "";
+//     });
 
-    });
+//     document.getElementById("add-btn").addEventListener("click", (e) => {
+//         e.preventDefault();
+//         addReagent();
+//     });
 
-    document.getElementById("add-btn").addEventListener("click", (e) => {
-        e.preventDefault();
-        addReagent();
-    });
-
-    document.getElementById("edit-btn").addEventListener("click", (e) => {
-        e.preventDefault();
-        updateReagent();
-    });
-});
+//     document.getElementById("edit-btn").addEventListener("click", (e) => {
+//         e.preventDefault();
+//         updateReagent();
+//     });
+// });
 
